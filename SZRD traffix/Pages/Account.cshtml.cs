@@ -7,8 +7,6 @@ namespace SZRD_traffix
 {
     public class AccountModel : PageModel
     {
-        // Używamy statycznej listy z AdminPanelu jako bazy danych w tym przykładzie
-
         [TempData]
         public string? StatusMessage { get; set; }
 

@@ -30,7 +30,6 @@
         padding-left: 15px;
     }
 
-    /* Tabela */
     .szrd-table {
         width: 100%;
         border-collapse: collapse;
@@ -51,7 +50,6 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-    /* Select do zmiany roli */
     .role-select {
         background: #2c3e50;
         color: white;
@@ -60,7 +58,6 @@
         border-radius: 4px;
     }
 
-    /* Modal (Okno popup) */
     .modal {
         display: none;
         position: fixed;
@@ -217,7 +214,6 @@
 </div>
 
 <script>
-    // Zamknij modal po kliknięciu poza nim
     window.onclick = function(event) {
         let modal = document.getElementById('createUserModal');
         if (event.target == modal) modal.style.display = "none";

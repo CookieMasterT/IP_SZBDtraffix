@@ -38,10 +38,8 @@ namespace SZRD_traffix
             {
                 CurrentDevice.Reports[index].Status = newStatus;
 
-                // Jeśli technik "bierze" zlecenie (Claimed)
                 if (newStatus == ReportStatus.Claimed)
                 {
-                    // W realnym systemie: CurrentFixer = zalogowany użytkownik
                     CurrentDevice.Reports[index].CurrentFixer = Users.CurrentUser;
                 }
             }

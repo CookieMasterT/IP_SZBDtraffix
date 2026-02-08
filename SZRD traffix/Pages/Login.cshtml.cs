@@ -6,11 +6,9 @@ namespace SZRD_traffix
 {
     public class LoginModel : PageModel
     {
-        // Wiązanie modelu danych z formularzem
         [BindProperty]
         public InputModel Input { get; set; }
 
-        // Klasa wewnętrzna definiująca pola formularza
         public class InputModel
         {
             [Required(ErrorMessage = "Adres email jest wymagany.")]
@@ -22,17 +20,14 @@ namespace SZRD_traffix
             public string Password { get; set; }
         }
 
-        // Metoda wywoływana przy wejściu na stronę
         public void OnGet()
         {
             if (Users.CurrentUser != null)
                 Response.Redirect("/Dashboard");
         }
 
-        // Metoda wywoływana po naciśnięciu przycisku "Zaloguj"
         public IActionResult OnPost()
         {
-            // 1. Sprawdź, czy formularz jest poprawnie wypełniony (walidacja po stronie serwera)
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -45,7 +40,6 @@ namespace SZRD_traffix
             }
             else
             {
-                // Błąd logowania
                 ModelState.AddModelError(string.Empty, "Nieprawidłowa nazwa użytkownika lub hasło.");
                 return Page();
             }

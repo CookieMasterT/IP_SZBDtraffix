@@ -23,7 +23,6 @@
         margin: 0;
     }
 
-    /* Główny kontener */
     .dashboard-container {
         padding: 40px;
         max-width: 1200px;
@@ -46,14 +45,12 @@
             color: #bdc3c7;
         }
 
-    /* Siatka kafelków */
     .grid-menu {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 25px;
     }
 
-    /* Wygląd pojedynczego kafelka */
     .menu-card {
         background-color: var(--szrd-card-bg);
         padding: 25px;
@@ -94,7 +91,6 @@
         color: #bdc3c7;
     }
 
-    /* Specjalne style dla karty "Zgłoś usterkę" */
     .card-alert .card-icon {
         color: #e74c3c;
     }
@@ -103,12 +99,10 @@
         border-color: #e74c3c;
     }
 
-    /* Specjalne style dla Admina */
     .card-admin .card-icon {
         color: #f1c40f;
     }
 
-    /* Wskaźnik statusu (kropka) */
     .status-dot {
         position: absolute;
         top: 15px;
@@ -116,7 +110,7 @@
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background-color: #2ecc71; /* Zielony - Online */
+        background-color: #2ecc71;
         box-shadow: 0 0 8px #2ecc71;
     }
 </style>
