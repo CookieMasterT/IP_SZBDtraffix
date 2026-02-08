@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SZRD traffix</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SZRD_traffix.styles.css" asp-append-version="true" />
+    <style>
+        :root {
+            --szrd-orange: #e67e22;
+            --szrd-darker: #1a1a1a;
+            --text-light: #ecf0f1;
+        }
+
+        header {
+            position: fixed;
+            width: 100%
+        }
+
+        .pushToEnd {
+            width: 100%;
+        }
+
+        .loginAction {
+            margin-left: 10px;
+            text-wrap: nowrap
+        }
+
+        body > .container {
+            padding-top: 75px;
+        }
+
+        .top-bar {
+            background-color: var(--szrd-darker, #1a1a1a);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--szrd-orange, #e67e22);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            color: var(--text-light, #ecf0f1);
+        }
+
+        .logo-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo h2 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--text-light, #ecf0f1);
+        }
+
+        .logo span {
+            color: var(--szrd-orange, #e67e22);
+        }
+
+        /* Sekcja użytkownika (prawa strona) */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Przycisk wylogowania */
+        .btn-log {
+            background: transparent;
+            border: 1px solid var(--szrd-orange, #e67e22);
+            color: var(--szrd-orange, #e67e22);
+            padding: 6px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Odstęp między ikoną a tekstem */
+        }
+
+            .btn-log:hover {
+                background-color: var(--szrd-orange, #e67e22);
+                color: white;
+                cursor: pointer;
+                box-shadow: 0 0 10px rgba(230, 126, 34, 0.4);
+            }
+
+        header h2 {
+            padding-right: 10px;
+        }
+
+        .nav-option {
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            text-wrap: nowrap
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm box-shadow mb-3 top-bar">
+            <div class="container">
+                <a asp-page="/Index" class="logo-link">
+                    <div class="logo">
+                        <h2>SZRD <span>traffix</span></h2>
+                    </div>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item nav-option">
+                            <a class="nav-link text-light nav-option" asp-area="" asp-page="/Index">Strona główna</a>
+                        </li>
+                        <li class="nav-item nav-option">
+                            <a class="nav-link text-light nav-option" asp-area="" asp-page="/Dashboard">Panel Sterowania</a>
+                        </li>
+                        <div class="pushToEnd"></div>
+                        @if (Users.CurrentUser == null)
+                        {
+                            <li class="nav-item loginAction">
+                                <a class="btn-log" asp-area="" asp-page="/Login">Zaloguj się</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item nav-option">
+                                <a class="nav-link text-light nav-option" asp-area="" asp-page="/Account">Twoje Konto</a>
+                            </li>
+                            <li class="nav-item loginAction">
+                                <a class="btn-log" asp-area="" asp-page="/Logout">Wyloguj się</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

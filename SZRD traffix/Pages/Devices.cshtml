@@ -1,0 +1,143 @@
+﻿@page
+@model DevicesPageModel
+@{
+    ViewData["Title"] = "Inwentarz Urządzeń - SZRD traffix";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --szrd-orange: #e67e22;
+        --szrd-dark: #2c3e50;
+        --szrd-card-bg: #34495e;
+    }
+
+    body {
+        background-color: var(--szrd-dark);
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .devices-container {
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .devices-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .device-card {
+        background: var(--szrd-card-bg);
+        border-radius: 8px;
+        padding: 20px;
+        border-top: 4px solid var(--szrd-orange);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s;
+    }
+
+        .device-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+    .device-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .reg-number {
+        background: #1a1a1a;
+        padding: 5px 12px;
+        border-radius: 4px;
+        color: var(--szrd-orange);
+        font-weight: bold;
+        font-size: 1.1rem;
+        border: 1px solid #444;
+    }
+
+    .location-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        color: #ecf0f1;
+        margin-bottom: 20px;
+        min-height: 50px;
+    }
+
+        .location-box i {
+            color: var(--szrd-orange);
+            margin-top: 4px;
+        }
+
+    .reports-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0,0,0,0.2);
+        padding: 10px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+        color: white;
+        transition: background 0.3s;
+        border: 1px solid transparent;
+    }
+
+        .reports-link:hover {
+            background: rgba(0,0,0,0.4);
+            border-color: var(--szrd-orange);
+        }
+
+    .report-count-badge {
+        background: var(--szrd-orange);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .report-count-zero {
+        background: #7f8c8d;
+    }
+</style>
+<div class="devices-container">
+    <div class="page-header" style="border-left: 5px solid var(--szrd-orange); padding-left: 15px;">
+        <h1 style="margin:0;">Urządzenia</h1>
+        <p style="color: #bdc3c7;">Przegląd wszystkich zarejestrowanych urządzeń w systemie SZRD.</p>
+    </div>
+
+    <div class="devices-grid">
+        @foreach (var device in Devices.devices)
+        {
+            <div class="device-card">
+                <div>
+                    <div class="device-header">
+                        <span class="reg-number">@device.RegistrationNumber</span>
+                    </div>
+
+                    <div class="location-box">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>@device.Location.PhysicalAddress</span>
+                    </div>
+                </div>
+
+                <a href="/DeviceReports?reg=@device.RegistrationNumber" class="reports-link">
+                    <span><i class="fas fa-file-alt"></i> Lista raportów</span>
+                    <span class="report-count-badge @(device.RelevantReportsCount == 0 ? "report-count-zero" : "")">
+                        @device.RelevantReportsCount
+                    </span>
+                </a>
+            </div>
+        }
+    </div>
+</div>

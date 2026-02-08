@@ -1,0 +1,44 @@
+﻿@page
+@model SZRD_traffix.LogoutModel
+@{
+    ViewData["Title"] = "Wylogowanie";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --szrd-orange: #e67e22;
+        --szrd-dark: #2c3e50;
+        --szrd-darker: #1a1a1a;
+        --szrd-card-bg: #34495e;
+        --text-light: #ecf0f1;
+    }
+
+    body {
+        background-color: var(--szrd-dark);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    .logout-container {
+        margin-top: 15px;
+        border-left: 5px solid var(--szrd-orange);
+        padding-left: 15px;
+    }
+
+        .logout-container p {
+            margin: 5px 0 0;
+            color: #bdc3c7;
+        }
+</style>
+
+<div class="logout-container">
+    <h2>
+        Wylogowanie zostało wykonane pomyślnie.
+    </h2>
+    <p>
+        Zalecane jest zamknięcie wszystkich kart przeglądarki.
+    </p>
+</div>

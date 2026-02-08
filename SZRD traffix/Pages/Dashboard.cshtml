@@ -1,0 +1,190 @@
+﻿@page
+@using SZRD_traffix
+@model DashboardModel
+@{
+    ViewData["Title"] = "Panel Sterowania";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --szrd-orange: #e67e22;
+        --szrd-dark: #2c3e50;
+        --szrd-darker: #1a1a1a;
+        --szrd-card-bg: #34495e;
+        --text-light: #ecf0f1;
+    }
+
+    body {
+        background-color: var(--szrd-dark);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    /* Główny kontener */
+    .dashboard-container {
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .welcome-header {
+        margin-bottom: 30px;
+        border-left: 5px solid var(--szrd-orange);
+        padding-left: 15px;
+    }
+
+        .welcome-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .welcome-header p {
+            margin: 5px 0 0;
+            color: #bdc3c7;
+        }
+
+    /* Siatka kafelków */
+    .grid-menu {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    /* Wygląd pojedynczego kafelka */
+    .menu-card {
+        background-color: var(--szrd-card-bg);
+        padding: 25px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: white;
+        transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 180px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            background-color: #3e5871;
+            border-color: var(--szrd-orange);
+        }
+
+    .card-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--szrd-orange);
+    }
+
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .card-desc {
+        font-size: 0.85rem;
+        color: #bdc3c7;
+    }
+
+    /* Specjalne style dla karty "Zgłoś usterkę" */
+    .card-alert .card-icon {
+        color: #e74c3c;
+    }
+
+    .card-alert:hover {
+        border-color: #e74c3c;
+    }
+
+    /* Specjalne style dla Admina */
+    .card-admin .card-icon {
+        color: #f1c40f;
+    }
+
+    /* Wskaźnik statusu (kropka) */
+    .status-dot {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #2ecc71; /* Zielony - Online */
+        box-shadow: 0 0 8px #2ecc71;
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="welcome-header">
+        <h1>Panel Sterowania</h1>
+        <p>Status systemu: <strong>Stabilny</strong> | Ostatnia aktualizacja: @DateTime.Now.ToString("HH:mm")</p>
+    </div>
+
+    <div class="grid-menu">
+        <a href="/Cameras" class="menu-card">
+            <div class="status-dot" title="System Online"></div>
+            <div>
+                <i class="fas fa-video card-icon"></i>
+                <div class="card-title">Kamery</div>
+                <div class="card-desc">Podgląd na żywo z monitoringu miejskiego.</div>
+            </div>
+        </a>
+
+        @if (Users.CurrentUserHasRole([Role.Technician, Role.Admin]))
+        {
+            <a href="/Devices" class="menu-card">
+                <div class="status-dot" title="System Online"></div>
+                <div>
+                    <i class="fas fa-server card-icon"></i>
+                    <div class="card-title">Urządzenia</div>
+                    <div class="card-desc">Stan sterowników sygnalizacji i czujników.</div>
+                </div>
+            </a>
+        }
+
+        <a href="/Map" class="menu-card">
+            <div>
+                <i class="fas fa-map-marked-alt card-icon"></i>
+                <div class="card-title">Mapa</div>
+                <div class="card-desc">Lokalizacja urządzeń i natężenie ruchu GPS.</div>
+            </div>
+        </a>
+
+        @if (Users.CurrentUserHasRole(Role.Admin))
+        {
+            <a href="/Stats" class="menu-card card-admin">
+                <div>
+                    <i class="fas fa-chart-line card-icon"></i>
+                    <div class="card-title">Dane i Statystyki</div>
+                    <div class="card-desc">Raporty przepustowości i odrzucone zgłoszenia</div>
+                </div>
+            </a>
+        }
+
+        <a href="/ReportFault" class="menu-card card-alert">
+            <div>
+                <i class="fas fa-exclamation-triangle card-icon"></i>
+                <div class="card-title">Zgłoś Usterkę</div>
+                <div class="card-desc">Formularz awarii infrastruktury drogowej.</div>
+            </div>
+        </a>
+
+        @if (Users.CurrentUserHasRole(Role.Admin))
+        {
+            <a href="/AdminPanel" class="menu-card card-admin">
+                <div>
+                    <i class="fas fa-user-shield card-icon"></i>
+                    <div class="card-title">Panel Admina</div>
+                    <div class="card-desc">Zarządzanie użytkownikami i konfiguracja.</div>
+                </div>
+            </a>
+        }
+    </div>
+</div>

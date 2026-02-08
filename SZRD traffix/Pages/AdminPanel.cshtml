@@ -1,0 +1,225 @@
+﻿@page
+@model AdminPanelModel
+@{
+    ViewData["Title"] = "Panel Administratora";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --szrd-orange: #e67e22;
+        --szrd-dark: #2c3e50;
+        --szrd-darker: #1a1a1a;
+    }
+
+    body {
+        background-color: var(--szrd-dark);
+        color: white;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .admin-container {
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    div > h1 {
+        border-left: 5px solid var(--szrd-orange);
+        padding-left: 15px;
+    }
+
+    /* Tabela */
+    .szrd-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #34495e;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .szrd-table th {
+            background: var(--szrd-darker);
+            color: var(--szrd-orange);
+            padding: 15px;
+            text-align: left;
+        }
+
+        .szrd-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+    /* Select do zmiany roli */
+    .role-select {
+        background: #2c3e50;
+        color: white;
+        border: 1px solid #555;
+        padding: 5px;
+        border-radius: 4px;
+    }
+
+    /* Modal (Okno popup) */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+    }
+
+    .modal-content {
+        background: #34495e;
+        margin: 10% auto;
+        padding: 30px;
+        width: 400px;
+        border-radius: 8px;
+        border-top: 5px solid var(--szrd-orange);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #bdc3c7;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+    .btn-add {
+        background: var(--szrd-orange);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-save {
+        background: #2ecc71;
+        width: 100%;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="admin-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Użytkownicy Systemu</h1>
+        <button class="btn-add" onclick="document.getElementById('createUserModal').style.display='block'">
+            <i class="fas fa-plus"></i> Nowy Użytkownik
+        </button>
+    </div>
+
+    <table class="szrd-table">
+        <thead>
+            <tr>
+                <th>Nazwa</th>
+                <th>Email</th>
+                <th>Rola (Zmień)</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Users.users)
+            {
+                <tr>
+                    <td>@u.nazwa</td>
+                    <td>@u.email</td>
+                    <td>
+                        @if (u != Users.CurrentUser)
+                        {
+                            <form method="post" asp-page-handler="UpdateRole" style="display:flex; gap:10px;">
+                                <input type="hidden" name="email" value="@u.email" />
+                                <select name="newRole" class="role-select" onchange="this.form.submit()">
+                                    @foreach (var role in Enum.GetValues(typeof(Role)))
+                                    {
+                                        <option value="@role" selected="@(u.role.ToString() == role.ToString())">@role</option>
+                                    }
+                                </select>
+                            </form>
+                        }
+                        else
+                        {
+                            <span>- - -</span>
+                        }
+                    </td>
+                    <td>
+                        @if (u != Users.CurrentUser)
+                        {
+                            <form method="post" asp-page-handler="Delete" onsubmit="return confirm('Usunąć użytkownika?')">
+                                <input type="hidden" name="email" value="@u.email" />
+                                <button type="submit" style="background:none; border:none; color:#e74c3c; cursor:pointer;">
+                                    <i class="fas fa-trash-alt"></i> Usuń
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span>- - -</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="createUserModal" class="modal">
+    <div class="modal-content">
+        <h2 style="margin-top:0">Dodaj pracownika SZRD</h2>
+        <form method="post" asp-page-handler="Create">
+            <div class="form-group">
+                <label>Imię i Nazwisko</label>
+                <input type="text" name="nazwa" required placeholder="Imię i Nazwisko" />
+            </div>
+            <div class="form-group">
+                <label>Email (Login)</label>
+                <input type="email" name="email" required placeholder="nazwa@szrd.pl" />
+            </div>
+            <div class="form-group">
+                <label>Hasło tymczasowe</label>
+                <input type="password" name="password" required placeholder="Hasło" />
+            </div>
+            <div class="form-group">
+                <label>Rola początkowa</label>
+                <select name="role">
+                    <option value="User">User (Użytkownik)</option>
+                    <option value="Technician">Technician (Serwisant)</option>
+                    <option value="Admin">Admin (Zarządca)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-save">Utwórz Konto</button>
+            <button type="button" onclick="document.getElementById('createUserModal').style.display='none'"
+                    style="background:none; border:none; color:#bdc3c7; width:100%; margin-top:10px; cursor:pointer;">
+                Anuluj
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Zamknij modal po kliknięciu poza nim
+    window.onclick = function(event) {
+        let modal = document.getElementById('createUserModal');
+        if (event.target == modal) modal.style.display = "none";
+    }
+</script>

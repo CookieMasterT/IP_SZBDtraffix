@@ -1,0 +1,231 @@
+﻿@page
+@model DeviceReportsModel
+@{
+    ViewData["Title"] = "Raporty - SZRD traffix";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --szrd-orange: #e67e22;
+        --szrd-dark: #2c3e50;
+        --status-pending: #f1c40f;
+        --status-claimed: #3498db;
+        --status-complete: #2ecc71;
+        --status-rejected: #e74c3c;
+    }
+
+    body {
+        background-color: var(--szrd-dark);
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .reports-container {
+        padding: 40px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .report-card {
+        background: #34495e;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        border-left: 6px solid #95a5a6;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Dynamiczne kolory lewej krawędzi zależne od statusu */
+    .border-Pending {
+        border-left-color: var(--status-pending);
+    }
+
+    .border-Claimed {
+        border-left-color: var(--status-claimed);
+    }
+
+    .border-Complete {
+        border-left-color: var(--status-complete);
+    }
+
+    .border-Rejected {
+        border-left-color: var(--status-rejected);
+    }
+
+    .report-header {
+        padding: 15px 20px;
+        background: rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .report-body {
+        padding: 20px;
+        font-size: 1.1rem;
+        line-height: 1.5;
+    }
+
+    .report-footer {
+        padding: 15px 20px;
+        background: rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .user-tag {
+        font-size: 0.85rem;
+        color: #bdc3c7;
+    }
+
+        .user-tag i {
+            color: var(--szrd-orange);
+            margin-right: 5px;
+        }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .badge-Pending {
+        background: var(--status-pending);
+        color: black;
+    }
+
+    .badge-Claimed {
+        background: var(--status-claimed);
+        color: white;
+    }
+
+    .badge-Complete {
+        background: var(--status-complete);
+        color: white;
+    }
+
+    .badge-Rejected {
+        background: var(--status-rejected);
+        color: white;
+    }
+
+    /* Przycisk akcji dla technika */
+    .action-btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 0.85rem;
+        transition: 0.3s;
+        color: white;
+    }
+
+    .btn-claim {
+        background: var(--status-claimed);
+    }
+
+    .btn-complete {
+        background: var(--status-complete);
+    }
+
+    .btn-reject {
+        background: var(--status-rejected);
+    }
+
+    .action-btn:hover {
+        opacity: 0.8;
+        transform: translateY(-1px);
+    }
+</style>
+<div class="reports-container">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
+        <div>
+            <h1 style="margin:0;">Lista Raportów</h1>
+            <p style="color: #bdc3c7;">Urządzenie: <strong style="color: var(--szrd-orange);">@DeviceReportsModel.CurrentDevice.RegistrationNumber</strong></p>
+        </div>
+        <a href="/Devices" style="color: #bdc3c7; text-decoration: none; font-size: 0.9rem;">
+            <i class="fas fa-arrow-left"></i> Powrót do urządzeń
+        </a>
+    </div>
+
+    @for (int i = 0; i < DeviceReportsModel.CurrentDevice.Reports.Count; i++)
+    {
+        var r = DeviceReportsModel.CurrentDevice.Reports[i];
+        <div class="report-card border-@r.Status">
+            <div class="report-header">
+                @if (r.Status == ReportStatus.Claimed)
+                {
+                    <span class="status-badge badge-@r.Status">
+                        Przyjęte
+                    </span>
+                }
+                @if (r.Status == ReportStatus.Complete)
+                {
+                    <span class="status-badge badge-@r.Status">
+                        Zakończone
+                    </span>
+                }
+                @if (r.Status == ReportStatus.Pending)
+                {
+                    <span class="status-badge badge-@r.Status">
+                        Oczekuje
+                    </span>
+                }
+                @if (r.Status == ReportStatus.Rejected)
+                {
+                    <span class="status-badge badge-@r.Status">
+                        Odrzucone
+                    </span>
+                }
+                <span class="user-tag">Zgłosił: @r.Reportee.nazwa</span>
+            </div>
+
+            <div class="report-body">
+                @r.Content
+            </div>
+
+            <div class="report-footer">
+                <div class="user-tag">
+                    Serwisant: @(r.CurrentFixer?.nazwa ?? "Brak")
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <form method="post" asp-page-handler="UpdateStatus">
+                        @if (r.CurrentFixer == null || r.CurrentFixer == Users.CurrentUser)
+                        {
+                            <input type="hidden" name="index" value="@i" />
+
+                            @if (r.Status == ReportStatus.Pending)
+                            {
+                                <button type="submit" name="newStatus" value="@ReportStatus.Claimed" class="action-btn btn-claim">
+                                    <i class="fas fa-hand-paper"></i> Przyjmij
+                                </button>
+                            }
+
+                            @if (r.Status == ReportStatus.Claimed)
+                            {
+                                <button type="submit" name="newStatus" value="@ReportStatus.Complete" class="action-btn btn-complete">
+                                    <i class="fas fa-check"></i> Naprawiono
+                                </button>
+                            }
+
+                            @if (r.Status != ReportStatus.Complete && r.Status != ReportStatus.Rejected)
+                            {
+                                <button type="submit" name="newStatus" value="@ReportStatus.Rejected" class="action-btn btn-reject">
+                                    <i class="fas fa-times"></i> Odrzuć
+                                </button>
+                            }
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
