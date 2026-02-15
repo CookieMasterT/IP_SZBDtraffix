@@ -122,14 +122,17 @@
     </div>
 
     <div class="grid-menu">
-        <a href="/Cameras" class="menu-card">
-            <div class="status-dot" title="System Online"></div>
-            <div>
-                <i class="fas fa-video card-icon"></i>
-                <div class="card-title">Kamery</div>
-                <div class="card-desc">Podgląd na żywo z monitoringu miejskiego.</div>
-            </div>
-        </a>
+        @if (false)
+        {
+            <a href="/Cameras" class="menu-card">
+                <div class="status-dot" title="System Online"></div>
+                <div>
+                    <i class="fas fa-video card-icon"></i>
+                    <div class="card-title">Kamery</div>
+                    <div class="card-desc">Podgląd na żywo z monitoringu miejskiego.</div>
+                </div>
+            </a>
+        }
 
         @if (Users.CurrentUserHasRole([Role.Technician, Role.Admin]))
         {
@@ -143,15 +146,18 @@
             </a>
         }
 
-        <a href="/Map" class="menu-card">
-            <div>
-                <i class="fas fa-map-marked-alt card-icon"></i>
-                <div class="card-title">Mapa</div>
-                <div class="card-desc">Lokalizacja urządzeń i natężenie ruchu GPS.</div>
-            </div>
-        </a>
+        @if (false)
+        {
+            <a href="/Map" class="menu-card">
+                <div>
+                    <i class="fas fa-map-marked-alt card-icon"></i>
+                    <div class="card-title">Mapa</div>
+                    <div class="card-desc">Lokalizacja urządzeń i natężenie ruchu GPS.</div>
+                </div>
+            </a>
+        }
 
-        @if (Users.CurrentUserHasRole(Role.Admin))
+        @if (Users.CurrentUserHasRole(Role.Admin) && false)
         {
             <a href="/Stats" class="menu-card card-admin">
                 <div>
